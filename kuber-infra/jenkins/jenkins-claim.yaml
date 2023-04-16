@@ -1,0 +1,27 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins-vol
+  namespace: kuber-infra
+spec:
+  storageClassName: nfs-client-slow
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins-home
+  namespace: kuber-infra
+spec:
+  storageClassName: nfs-client-slow
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+---

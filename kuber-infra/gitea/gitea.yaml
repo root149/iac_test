@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: kuber-infra
+  labels:
+    app: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+      - name: gitea
+        image: gitea/gitea:latest
+        resources:
+          limits:
+            memory: "4Gi"
+            cpu: "1000m"
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+          name: gitea
+        - containerPort: 22
+          name: git-ssh
+        volumeMounts:
+        - mountPath: /data
+          name: git-volume
+      volumes:
+      - name: git-volume
+        persistentVolumeClaim:
+          claimName: git-volume
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: git-volume
+  namespace: kuber-infra
+spec:
+  storageClassName: nfs-client-fast
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 60Gi

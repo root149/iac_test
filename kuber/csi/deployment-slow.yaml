@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client-provisioner-slow
+  labels:
+    app: nfs-client-provisioner-slow
+  # replace with namespace where provisioner is deployed
+  namespace: kuber-nfs
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner-slow
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner-slow
+    spec:
+      serviceAccountName: nfs-client-provisioner-slow
+      containers:
+        - name: nfs-client-provisioner-slow
+          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+          volumeMounts:
+            - name: nfs-client-root-slow
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: k8s-sigs.io/nfs-slow
+            - name: NFS_SERVER
+              value: 192.168.6.15
+            - name: NFS_PATH
+              value: /mnt/HD/HD_a2/nfs/kuber-nfs-slow
+      volumes:
+        - name: nfs-client-root-slow
+          nfs:
+            server: 192.168.6.15
+            path: /mnt/HD/HD_a2/nfs/kuber-nfs-slow

@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nexus-data
+  namespace: kuber-infra
+spec:
+  storageClassName: nfs-client-fast
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 80Gi
